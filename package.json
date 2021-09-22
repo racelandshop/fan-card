@@ -1,7 +1,7 @@
 {
-  "name": "boilerplate-card",
+  "name": "fan-card",
   "version": "1.4.0",
-  "description": "Lovelace boilerplate-card",
+  "description": "Lovelace fan-card",
   "keywords": [
     "home-assistant",
     "homeassistant",
@@ -10,9 +10,9 @@
     "lovelace",
     "custom-cards"
   ],
-  "module": "boilerplate-card.js",
-  "repository": "git@github.com:custom_cards/boilerplate-card.git",
-  "author": "Ian Richardson <iantrich@gmail.com>",
+  "module": "fan-card.js",
+  "repository": "git@github.com:racelandshop/fan-card.git",
+  "author": "João Nogueira <joao.nogueira@raceland.pt>",
   "license": "MIT",
   "dependencies": {
     "custom-card-helpers": "^1.8.0",
