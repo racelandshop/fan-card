@@ -1,11 +1,9 @@
 import { noChange } from 'lit';
 import { AttributePart, directive, Directive, DirectiveParameters } from 'lit/directive';
-
 import { ActionHandlerDetail, ActionHandlerOptions } from 'custom-card-helpers/dist/types';
 import { fireEvent } from 'custom-card-helpers';
 
-const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
-
+const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0;
 interface ActionHandler extends HTMLElement {
   holdTime: number;
   bind(element: Element, options): void;
@@ -13,23 +11,17 @@ interface ActionHandler extends HTMLElement {
 interface ActionHandlerElement extends HTMLElement {
   actionHandler?: boolean;
 }
-
 declare global {
   interface HASSDomEvents {
     action: ActionHandlerDetail;
   }
 }
-
 class ActionHandler extends HTMLElement implements ActionHandler {
   public holdTime = 500;
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public ripple: any;
-
   protected timer?: number;
-
   protected held = false;
-
   private dblClickTimeout?: number;
 
   constructor() {
@@ -68,7 +60,6 @@ class ActionHandler extends HTMLElement implements ActionHandler {
       return;
     }
     element.actionHandler = true;
-
     element.addEventListener('contextmenu', (ev: Event) => {
       const e = ev || window.event;
       if (e.preventDefault) {
@@ -137,10 +128,8 @@ class ActionHandler extends HTMLElement implements ActionHandler {
     element.addEventListener('touchstart', start, { passive: true });
     element.addEventListener('touchend', end);
     element.addEventListener('touchcancel', end);
-
     element.addEventListener('mousedown', start, { passive: true });
     element.addEventListener('click', end);
-
     element.addEventListener('keyup', handleEnter);
   }
 
@@ -161,19 +150,16 @@ class ActionHandler extends HTMLElement implements ActionHandler {
     this.style.display = 'none';
   }
 }
-
 // TODO You need to replace all instances of "action-handler-boilerplate" with "action-handler-<your card name>"
-customElements.define('action-handler-boilerplate', ActionHandler);
+customElements.define('action-handler-fan-card', ActionHandler);
 
 const getActionHandler = (): ActionHandler => {
   const body = document.body;
-  if (body.querySelector('action-handler-boilerplate')) {
-    return body.querySelector('action-handler-boilerplate') as ActionHandler;
+  if (body.querySelector('action-handler-fan-card')) {
+    return body.querySelector('action-handler-fan-card') as ActionHandler;
   }
-
-  const actionhandler = document.createElement('action-handler-boilerplate');
+  const actionhandler = document.createElement('action-handler-fan-card');
   body.appendChild(actionhandler);
-
   return actionhandler as ActionHandler;
 };
 
@@ -191,7 +177,6 @@ export const actionHandler = directive(
       actionHandlerBind(part.element as ActionHandlerElement, options);
       return noChange;
     }
-
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     render(_options?: ActionHandlerOptions) {}
   },

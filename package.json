@@ -15,9 +15,11 @@
   "author": "Ian Richardson <iantrich@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "custom-card-helpers": "^1.7.2",
+    "custom-card-helpers": "^1.8.0",
     "home-assistant-js-websocket": "^4.5.0",
-    "lit": "^2.0.0-rc.2"
+    "lit": "^2.0.0-rc.2",
+    "material": "^0.4.3",
+    "@material/mwc-ripple": "^0.19.1"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

@@ -2,52 +2,21 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { LitElement, html, TemplateResult, css, CSSResultGroup } from 'lit';
 import { HomeAssistant, fireEvent, LovelaceCardEditor, ActionConfig } from 'custom-card-helpers';
-
-import { BoilerplateCardConfig } from './types';
+import { BoilerplateCardConfig, EditorTarget } from './types';
 import { customElement, property, state } from 'lit/decorators';
+import { assert } from 'superstruct';
 
-const options = {
+
+const cardConfigStruct = {
   required: {
-    icon: 'tune',
-    name: 'Required',
-    secondary: 'Required options for this card to function',
+    name: 'Entidade (Opcional)',
     show: true,
-  },
-  actions: {
-    icon: 'gesture-tap-hold',
-    name: 'Actions',
-    secondary: 'Perform actions based on tapping/clicking',
-    show: false,
-    options: {
-      tap: {
-        icon: 'gesture-tap',
-        name: 'Tap',
-        secondary: 'Set the action to perform on tap',
-        show: false,
-      },
-      hold: {
-        icon: 'gesture-tap-hold',
-        name: 'Hold',
-        secondary: 'Set the action to perform on hold',
-        show: false,
-      },
-      double_tap: {
-        icon: 'gesture-double-tap',
-        name: 'Double Tap',
-        secondary: 'Set the action to perform on double tap',
-        show: false,
-      },
-    },
-  },
-  appearance: {
-    icon: 'palette',
-    name: 'Appearance',
-    secondary: 'Customize the name, icon, etc',
-    show: false,
   },
 };
 
-@customElement('boilerplate-card-editor')
+const includeDomains = ["switch"];
+
+@customElement('fan-card-editor')
 export class BoilerplateCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _config?: BoilerplateCardConfig;
@@ -57,7 +26,6 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
 
   public setConfig(config: BoilerplateCardConfig): void {
     this._config = config;
-
     this.loadCardHelpers();
   }
 
@@ -71,6 +39,14 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
 
   get _name(): string {
     return this._config?.name || '';
+  }
+
+  get _show_name(): boolean {
+    return this._config?.show_name ?? true;
+  }
+
+  get _show_state(): boolean {
+    return this._config?.show_state ?? true;
   }
 
   get _entity(): string {
@@ -106,127 +82,82 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
     this._helpers.importMoreInfoControl('climate');
 
     // You can restrict on domain type
-    const entities = Object.keys(this.hass.states).filter(eid => eid.substr(0, eid.indexOf('.')) === 'sun');
+    const entities = Object.keys(this.hass.states).filter(eid => eid.substr(0, eid.indexOf('.')) === 'switch');
 
     return html`
       <div class="card-config">
         <div class="option" @click=${this._toggleOption} .option=${'required'}>
-          <div class="row">
-            <ha-icon .icon=${`mdi:${options.required.icon}`}></ha-icon>
-            <div class="title">${options.required.name}</div>
-          </div>
-          <div class="secondary">${options.required.secondary}</div>
-        </div>
-        ${options.required.show
-          ? html`
-              <div class="values">
-                <paper-dropdown-menu
-                  label="Entity (Required)"
-                  @value-changed=${this._valueChanged}
-                  .configValue=${'entity'}
-                >
-                  <paper-listbox slot="dropdown-content" .selected=${entities.indexOf(this._entity)}>
-                    ${entities.map(entity => {
-                      return html`
-                        <paper-item>${entity}</paper-item>
-                      `;
-                    })}
-                  </paper-listbox>
-                </paper-dropdown-menu>
-              </div>
-            `
-          : ''}
-        <div class="option" @click=${this._toggleOption} .option=${'actions'}>
-          <div class="row">
-            <ha-icon .icon=${`mdi:${options.actions.icon}`}></ha-icon>
-            <div class="title">${options.actions.name}</div>
-          </div>
-          <div class="secondary">${options.actions.secondary}</div>
-        </div>
-        ${options.actions.show
-          ? html`
-              <div class="values">
-                <div class="option" @click=${this._toggleAction} .option=${'tap'}>
-                  <div class="row">
-                    <ha-icon .icon=${`mdi:${options.actions.options.tap.icon}`}></ha-icon>
-                    <div class="title">${options.actions.options.tap.name}</div>
-                  </div>
-                  <div class="secondary">${options.actions.options.tap.secondary}</div>
-                </div>
-                ${options.actions.options.tap.show
-                  ? html`
-                      <div class="values">
-                        <paper-item>Action Editors Coming Soon</paper-item>
-                      </div>
-                    `
-                  : ''}
-                <div class="option" @click=${this._toggleAction} .option=${'hold'}>
-                  <div class="row">
-                    <ha-icon .icon=${`mdi:${options.actions.options.hold.icon}`}></ha-icon>
-                    <div class="title">${options.actions.options.hold.name}</div>
-                  </div>
-                  <div class="secondary">${options.actions.options.hold.secondary}</div>
-                </div>
-                ${options.actions.options.hold.show
-                  ? html`
-                      <div class="values">
-                        <paper-item>Action Editors Coming Soon</paper-item>
-                      </div>
-                    `
-                  : ''}
-                <div class="option" @click=${this._toggleAction} .option=${'double_tap'}>
-                  <div class="row">
-                    <ha-icon .icon=${`mdi:${options.actions.options.double_tap.icon}`}></ha-icon>
-                    <div class="title">${options.actions.options.double_tap.name}</div>
-                  </div>
-                  <div class="secondary">${options.actions.options.double_tap.secondary}</div>
-                </div>
-                ${options.actions.options.double_tap.show
-                  ? html`
-                      <div class="values">
-                        <paper-item>Action Editors Coming Soon</paper-item>
-                      </div>
-                    `
-                  : ''}
-              </div>
-            `
-          : ''}
-        <div class="option" @click=${this._toggleOption} .option=${'appearance'}>
-          <div class="row">
-            <ha-icon .icon=${`mdi:${options.appearance.icon}`}></ha-icon>
-            <div class="title">${options.appearance.name}</div>
-          </div>
-          <div class="secondary">${options.appearance.secondary}</div>
-        </div>
-        ${options.appearance.show
-          ? html`
-              <div class="values">
-                <paper-input
-                  label="Name (Optional)"
-                  .value=${this._name}
-                  .configValue=${'name'}
-                  @value-changed=${this._valueChanged}
-                ></paper-input>
-                <br />
-                <ha-formfield .label=${`Toggle warning ${this._show_warning ? 'off' : 'on'}`}>
-                  <ha-switch
-                    .checked=${this._show_warning !== false}
-                    .configValue=${'show_warning'}
-                    @change=${this._valueChanged}
-                  ></ha-switch>
-                </ha-formfield>
-                <ha-formfield .label=${`Toggle error ${this._show_error ? 'off' : 'on'}`}>
-                  <ha-switch
-                    .checked=${this._show_error !== false}
-                    .configValue=${'show_error'}
-                    @change=${this._valueChanged}
-                  ></ha-switch>
-                </ha-formfield>
-              </div>
-            `
-          : ''}
-      </div>
+              <ha-entity-picker
+              .label="${this.hass.localize(
+      "ui.panel.lovelace.editor.card.generic.entity"
+    )} (${this.hass.localize(
+      "ui.panel.lovelace.editor.card.config.optional"
+    )})"
+          .hass=${this.hass}
+          .value=${this._entity}
+          .configValue=${"entity"}
+          .includeDomains=${includeDomains}
+          @value-changed=${this._valueChanged}
+          allow-custom-entity
+              ></ha-entity-picker>
+
+    <div class="side-by-side">
+        <paper-input
+        .label="${this.hass.localize("ui.panel.lovelace.editor.card.generic.name")} (${this.hass.localize("ui.panel.lovelace.editor.card.config.optional")})"
+
+        .value=${this._name}
+        .configValue=${"name"}
+        @value-changed=${this._valueChanged}
+        ></paper-input>
+    </div class="side-by-side">
+
+    <div class="div-options">
+        <ha-formfield
+        .label=${this.hass.localize("ui.panel.lovelace.editor.card.generic.show_name")}
+        .dir=${this.dir}
+        >
+        <ha-switch
+        .checked=${this._show_name !== false}
+        .configValue=${"show_name"}
+        @change=${this._change}
+        ></ha-switch>
+        </ha-formfield>
+
+        <ha-formfield
+        .label=${this.hass.localize("ui.panel.lovelace.editor.card.generic.show_state")}
+        ${console.log(this.hass.localize("ui.panel.lovelace.editor.card.generic.show_state"))}
+        .dir=${this.dir}
+        >
+        <ha-switch
+        .checked=${this._show_state !== false}
+        .configValue=${"show_state"}
+         @change=${this._change}
+         ></ha-switch>
+         </ha-formfield>
+
+    </div>
+
+
     `;
+  }
+
+  private _change(ev: Event) {
+    if (!this._config || !this.hass) {
+      return;
+    }
+    const target = ev.target! as EditorTarget;
+    const value = target.checked;
+
+    if (this[`_${target.configValue}`] === value) {
+      return;
+    }
+
+    fireEvent(this, "config-changed", {
+      config: {
+        ...this._config,
+        [target.configValue!]: value,
+      },
+    });
   }
 
   private _initialize(): void {
@@ -240,12 +171,8 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
     this._helpers = await (window as any).loadCardHelpers();
   }
 
-  private _toggleAction(ev): void {
-    this._toggleThing(ev, options.actions.options);
-  }
-
   private _toggleOption(ev): void {
-    this._toggleThing(ev, options);
+    this._toggleThing(ev, Option);
   }
 
   private _toggleThing(ev, optionList): void {
@@ -307,7 +234,7 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
         display: grid;
       }
       ha-formfield {
-        padding-bottom: 8px;
+        padding: 0px 10px 0px 20px;
       }
     `;
   }
