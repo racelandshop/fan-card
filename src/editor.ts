@@ -4,15 +4,15 @@ import { LitElement, html, TemplateResult, css, CSSResultGroup } from 'lit';
 import { HomeAssistant, fireEvent, LovelaceCardEditor, ActionConfig } from 'custom-card-helpers';
 import { BoilerplateCardConfig, EditorTarget } from './types';
 import { customElement, property, state } from 'lit/decorators';
-import { assert } from 'superstruct';
+//import { assert } from 'superstruct';
 
 
-const cardConfigStruct = {
-  required: {
-    name: 'Entidade (Opcional)',
-    show: true,
-  },
-};
+// const cardConfigStruct = {
+//   required: {
+//     name: 'Entidade (Opcional)',
+//     show: true,
+//   },
+// };
 
 const includeDomains = ["switch"];
 
@@ -100,6 +100,8 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
           @value-changed=${this._valueChanged}
           allow-custom-entity
               ></ha-entity-picker>
+              </div  class="card-config">
+              </div  class="option">
 
     <div class="side-by-side">
         <paper-input
@@ -121,11 +123,10 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
         .configValue=${"show_name"}
         @change=${this._change}
         ></ha-switch>
-        </ha-formfield>
+        </ha-formfield>Mostrar nome?
 
         <ha-formfield
         .label=${this.hass.localize("ui.panel.lovelace.editor.card.generic.show_state")}
-        ${console.log(this.hass.localize("ui.panel.lovelace.editor.card.generic.show_state"))}
         .dir=${this.dir}
         >
         <ha-switch
@@ -133,7 +134,7 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
         .configValue=${"show_state"}
          @change=${this._change}
          ></ha-switch>
-         </ha-formfield>
+         </ha-formfield>Mostrar estado?
 
     </div>
 

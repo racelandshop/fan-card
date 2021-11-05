@@ -9,8 +9,7 @@ import {
   PropertyValues,
   CSSResultGroup,
 } from 'lit';
-
-
+import { findEntities } from "./././find-entities";
 import { HassEntity } from 'home-assistant-js-websocket'
 import { queryAsync } from 'lit-element'
 import { customElement, property, state } from "lit/decorators";
@@ -48,8 +47,8 @@ console.info(
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
   type: 'fan-card',
-  name: 'fan-card',
-  description: 'A template custom card for you to create something awesome',
+  name: 'Ventoinha',
+  preview: true, //IMPORTANTE
 });
 
 // TODO Name your custom element
@@ -61,8 +60,22 @@ export class BoilerplateCard extends LitElement {
 
   @queryAsync('mwc-ripple') private _ripple!: Promise<Ripple | null>;
 
-  public static getStubConfig(): object {
-    return {};
+  public static getStubConfig(
+    hass: HomeAssistant,
+    entities: string[],
+    entitiesFallback: string[]
+  ): BoilerplateCardConfig {
+    const includeDomains = ["switch"];
+    const maxEntities = 1;
+    const foundEntities = findEntities(
+      hass,
+      maxEntities,
+      entities,
+      entitiesFallback,
+      includeDomains
+    );
+
+    return { type: "custom:fan-card", entity: foundEntities[0] || "", "show_name": true, "show_state": true,"name": "raceland"};
   }
 
   // TODO Add any properities that should cause your element to re-render here
@@ -284,15 +297,15 @@ private computeActiveState = (stateObj: HassEntity): string => {
         box-sizing: border-box;
         justify-content: center;
         position: relative;
-        background: rgba(120,120,120,0.7);
+        background: rgba(53,53,56,0.7);
         color: white;
         border-radius: 25px;
         padding-left: 10%;
       }
-      ha-card:focus {
+      /* ha-card:focus {
         outline: solid;
         outline-color: white;
-      }
+      } */
       ha-icon {
         width: 50%;
         /* border: 2px solid #73AD21; */
