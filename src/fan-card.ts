@@ -45,7 +45,7 @@ export class BoilerplateCard extends LitElement {
       entitiesFallback,
       includeDomains
     );
-    return { type: "custom:fan-card", entity: foundEntities[0] || "", "show_name": true, "show_state": true,"name": "raceland"};
+    return { type: "custom:fan-card", entity: foundEntities[0] || "", "show_name": true, "show_state": true,"name": "Raceland"};
   }
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private config!: BoilerplateCardConfig;
@@ -216,9 +216,9 @@ private computeActiveState = (stateObj: HassEntity): string => {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 0px 0px 0px 0px;
+        padding: 10px 0px 10px 40px;
         font-size: 1.2rem;
-        width: 75%; //100% hui-card-options
+        width: 100%;
         height: 100%;
         box-sizing: border-box;
         justify-content: center;
@@ -233,8 +233,8 @@ private computeActiveState = (stateObj: HassEntity): string => {
         height: 100%;
         color: var(--paper-item-icon-color, #fdd835);
         --mdc-icon-size: 100%;
-        margin: 0% 45% 0% 0%;
-        padding: 0% 10% 0% 10%;
+        padding: 5% 0% 5% 0%;
+        margin: 0% 30% 0% 0%;
       }
       span {
         margin: 0% 50% 0% 0%;
@@ -255,22 +255,21 @@ private computeActiveState = (stateObj: HassEntity): string => {
       .hassbut.state-on {
         background: rgba(255,255,255,0.7);
         color: black;
-        padding: 5% 5% 5% 5%;
+        padding: 5px 100px 10px 5px;
+        text-align: center;
       }
       .hassbut.state-off {
-        padding: 5% 5% 5% 5%;
+        padding: 5px 100px 10px 5px;
+        text-align: center;
       }
       .hassbut {
         display: grid;
-        grid-template-columns: 50% 50%;
       }
       .state-div {
-        padding: 0% 0% 0% 5%;
-        width: 100%;
+        padding: 0% 0% 0% 0%;
       }
       .name-div {
-        padding: 5% 0% 0% 5%;
-        width: 100%;
+        padding: 0% 0% 0% 0%;
       }
       .fan-icon.state-on {
         color: var(--paper-item-icon-active-color, #fdd835);
