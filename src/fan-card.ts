@@ -216,9 +216,9 @@ private computeActiveState = (stateObj: HassEntity): string => {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 0px 10px 50px 0px;
+        padding: 0px 0px 0px 0px;
         font-size: 1.2rem;
-        width: 100%;
+        width: 75%; //100% hui-card-options
         height: 100%;
         box-sizing: border-box;
         justify-content: center;
@@ -226,39 +226,50 @@ private computeActiveState = (stateObj: HassEntity): string => {
         background: rgba(53,53,56,0.7);
         color: white;
         border-radius: 25px;
-        padding-left: 10%;
+        overflow: hidden;
       }
       ha-icon {
-        width: 100%;
+        width: 90%;
         height: 100%;
-        padding: 0px 0px 0px 0px;
-        color: var(--paper-item-icon-color, #44739e);
+        color: var(--paper-item-icon-color, #fdd835);
         --mdc-icon-size: 100%;
+        margin: 0% 45% 0% 0%;
+        padding: 0% 10% 0% 10%;
+      }
+      span {
+        margin: 0% 50% 0% 0%;
+        padding: 0% 100% 0% 0%;
       }
       ha-icon + span {
-        margin-top: 3%;
-        margin-bottom: 10%;
+        text-align: left;
       }
       ha-icon,
       span {
         outline: none;
       }
+      .state {
+        margin: 0% 50% 5% 0%;
+        padding: 0% 100% 5% 0%;
+        text-align: left;
+      }
       .hassbut.state-on {
         background: rgba(255,255,255,0.7);
         color: black;
+        padding: 5% 5% 5% 5%;
+      }
+      .hassbut.state-off {
+        padding: 5% 5% 5% 5%;
       }
       .hassbut {
         display: grid;
         grid-template-columns: 50% 50%;
       }
       .state-div {
-        padding: 0px 0px 0px 0px;
-        text-align: left;
+        padding: 0% 0% 0% 5%;
         width: 100%;
       }
       .name-div {
-        padding: 20px 0px 5px 0px;
-        text-align: left;
+        padding: 5% 0% 0% 5%;
         width: 100%;
       }
       .fan-icon.state-on {
