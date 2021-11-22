@@ -216,30 +216,29 @@ private computeActiveState = (stateObj: HassEntity): string => {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 10px 0px 10px 40px;
-        margin-bottom: 8px;
+        padding: 10% 10% 10% 10%;
         font-size: 1.2rem;
         width: 100%;
         height: 100%;
         box-sizing: border-box;
         justify-content: center;
         position: relative;
-        background: rgba(53,53,56,0.7);
+        background: rgba(53,53,53,0.8);
         color: white;
         border-radius: 25px;
         overflow: hidden;
       }
       ha-icon {
-        width: 90%;
-        height: 100%;
+        width: 70%;
+        height: 80%;
+        padding-bottom: 15px;
+        margin: 0% 0% 0% 0%;
         color: var(--paper-item-icon-color, #fdd835);
         --mdc-icon-size: 100%;
-        padding: 5% 0% 5% 0%;
-        margin: 0% 30% 0% 0%;
       }
       span {
-        margin: 0% 50% 0% 0%;
-        padding: 0% 100% 0% 0%;
+        margin: 5% 50% 1% 0%;
+        padding: 0% 100% 1% 0%;
       }
       ha-icon + span {
         text-align: left;
@@ -250,27 +249,26 @@ private computeActiveState = (stateObj: HassEntity): string => {
       }
       .state {
         margin: 0% 50% 5% 0%;
-        padding: 0% 100% 5% 0%;
+        padding: 0% 100% 10% 0%;
         text-align: left;
       }
       .hassbut.state-on {
-        background: rgba(255,255,255,0.7);
-        color: black;
-        padding: 5px 100px 10px 5px;
-        text-align: center;
+        text-align: left;
       }
       .hassbut.state-off {
-        padding: 5px 100px 10px 5px;
-        text-align: center;
+        text-align: left;
       }
       .hassbut {
         display: grid;
+        grid-template-columns: 50% 50%;
       }
       .state-div {
-        padding: 0% 0% 0% 0%;
+        padding: 0% 100% 10% 0%;
+        align-items: left;
       }
       .name-div {
-        padding: 0% 0% 0% 0%;
+        padding: 0% 100% 1% 0%;
+        align-items: left;
       }
       .fan-icon.state-on {
         color: var(--paper-item-icon-active-color, #fdd835);
