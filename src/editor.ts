@@ -166,7 +166,7 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
   static get styles(): CSSResultGroup {
     return css`
       .option {
-        padding: 4px 0px;
+        padding: 3% 0%;
         cursor: pointer;
       }
       .row {
