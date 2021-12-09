@@ -212,12 +212,12 @@ private computeActiveState = (stateObj: HassEntity): string => {
     return css`
       ha-card {
         cursor: pointer;
-        display: flex;
+        display: grid;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
+        align-items: left;
+        text-align: left;
         padding: 10% 10% 10% 10%;
-        font-size: 1.2rem;
+        font-size: 18px;
         width: 100%;
         height: 100%;
         box-sizing: border-box;
@@ -227,17 +227,16 @@ private computeActiveState = (stateObj: HassEntity): string => {
         color: var(--card-color-text, white);
         border-radius: 25px;
         overflow: hidden;
+        grid-template-columns: 50% 50%;
       }
       ha-icon {
-        width: 70%;
+        width: 80%;
         height: 80%;
-        padding-bottom: 15px;
         margin: 0% 0% 0% 0%;
         color: var(--paper-item-icon-color, #fdd835);
         --mdc-icon-size: 100%;
       }
       span {
-        margin: 5% 50% 1% 0%;
         padding: 0% 100% 1% 0%;
       }
       ha-icon + span {
@@ -263,11 +262,11 @@ private computeActiveState = (stateObj: HassEntity): string => {
         grid-template-columns: 50% 50%;
       }
       .state-div {
-        padding: 0% 100% 10% 0%;
+        padding: 0% 100% 5% 0%;
         align-items: left;
       }
       .name-div {
-        padding: 0% 100% 1% 0%;
+        padding: 2% 100% 0% 0%;
         align-items: left;
       }
       .fan-icon.state-on {
