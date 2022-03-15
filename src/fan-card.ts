@@ -27,6 +27,7 @@ console.info(
   name: 'Ventoinha',
   preview: true, //IMPORTANTE
 });
+
 @customElement('fan-card')
 export class BoilerplateCard extends LitElement {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
@@ -47,9 +48,11 @@ export class BoilerplateCard extends LitElement {
       entitiesFallback,
       includeDomains
     );
-    return { type: "custom:fan-card", entity: foundEntities[0] || "", "show_name": true, "show_state": true,"name": "Raceland"};
+    return { type: "custom:fan-card", entity: foundEntities[0] || "", "show_name": true, "show_state": true};
   }
+
   @property({ attribute: false }) public hass!: HomeAssistant;
+
   @state() private config!: BoilerplateCardConfig;
   public setConfig(config: BoilerplateCardConfig): void {
     if (!config) {
@@ -67,6 +70,7 @@ export class BoilerplateCard extends LitElement {
       },
     };
   }
+
   public translate_state(stateObj): string{
     if(ifDefined(stateObj ? this.computeActiveState(stateObj) : undefined) === "on") {
       return localize("states.on");
@@ -81,12 +85,14 @@ export class BoilerplateCard extends LitElement {
       return ""
     }
   }
+
   protected shouldUpdate(changedProps: PropertyValues): boolean {
     if (!this.config) {
       return false;
     }
     return hasConfigOrEntityChanged(this, changedProps, false);
   }
+
   protected render(): TemplateResult | void {
     if (this.config.show_warning) {
       return this._showWarning(localize('common.show_warning'));
@@ -97,7 +103,7 @@ export class BoilerplateCard extends LitElement {
     const stateObj = this.config.entity
       ? this.hass.states[this.config.entity]
       : undefined;
-  return html`
+    return html`
       <ha-card
         class="hassbut ${classMap({
           "state-on": ifDefined(
@@ -116,51 +122,52 @@ export class BoilerplateCard extends LitElement {
       >
       ${this.config.show_icon
           ? html`
-              <ha-icon
-                class="fan-icon ${classMap({
-                 "state-on": ifDefined(
-                   stateObj ? this.computeActiveState(stateObj) : undefined) === "on",
-                  "state-off": ifDefined(
-                   stateObj ? this.computeActiveState(stateObj) : undefined) === "off",
-                  "state-unavailable": ifDefined(
-                   stateObj ? this.computeActiveState(stateObj) : undefined) === "unavailable"
-               })}"
-                tabindex="-1"
-                data-domain=${ifDefined(
-                  this.config.state_color && stateObj
-                    ? computeStateDomain(stateObj)
-                    : undefined
-                )}
-                data-state=${ifDefined(
-                  stateObj ? this.computeActiveState(stateObj) : undefined
-                )}
-                .icon=${this.config.icon}
-              ></ha-icon>
-            `
-    : ""}
+            <ha-icon
+              class="fan-icon ${classMap({
+                "state-on": ifDefined(
+                  stateObj ? this.computeActiveState(stateObj) : undefined) === "on",
+                "state-off": ifDefined(
+                  stateObj ? this.computeActiveState(stateObj) : undefined) === "off",
+                "state-unavailable": ifDefined(
+                  stateObj ? this.computeActiveState(stateObj) : undefined) === "unavailable"
+              })}"
+              tabindex="-1"
+              data-domain=${ifDefined(
+                this.config.state_color && stateObj
+                  ? computeStateDomain(stateObj)
+                  : undefined
+              )}
+              data-state=${ifDefined(
+                stateObj ? this.computeActiveState(stateObj) : undefined
+              )}
+              .icon=${this.config.icon}
+            ></ha-icon>
+          `
+        : ""}
     <div>
 
     </div>
     ${this.config.show_name
-    ? html`
-      <div tabindex = "-1" class="name-div">
-      ${this.config.name}
-        </div>
-      `
-    : ""}
+      ? html`
+        <div tabindex = "-1" class="name-div">
+        ${this.config.name}
+          </div>
+        `
+      : ""}
     <div>
 
     </div>
-    ${this.config.show_state
-    ? html`
-      <div tabindex="-1" class="state-div">
-      ${this.translate_state(stateObj)
 
-      }
-      <div class="position"></div>
-     </div>
-     `
-    : ""}
+    ${this.config.show_state
+      ? html`
+        <div tabindex="-1" class="state-div">
+        ${this.translate_state(stateObj)
+
+        }
+        <div class="position"></div>
+      </div>
+      `
+      : ""}
     <div>
 
     </div>
@@ -169,6 +176,7 @@ export class BoilerplateCard extends LitElement {
     </ha-card>
     `;
   }
+
 private computeActiveState = (stateObj: HassEntity): string => {
   const domain = stateObj.entity_id.split(".")[0];
   let state = stateObj.state;
@@ -210,97 +218,99 @@ private computeActiveState = (stateObj: HassEntity): string => {
   private handleRippleFocus() {
     this._rippleHandlers.startFocus();
   }
-  static get styles(): CSSResultGroup {
-    return css`
-      ha-card {
-        cursor: pointer;
-        display: grid;
-        flex-direction: column;
-        align-items: left;
-        text-align: left;
-        padding: 10% 10% 10% 10%;
-        font-size: 18px;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-        justify-content: center;
-        position: relative;
-        background: var(--card-color-background, rgba(53,53,53,0.9));
-        color: var(--card-color-text, white);
-        border-radius: 25px;
-        overflow: hidden;
-        grid-template-columns: 50% 50%;
+
+
+static get styles(): CSSResultGroup {
+  return css`
+    ha-card {
+      cursor: pointer;
+      display: grid;
+      flex-direction: column;
+      align-items: left;
+      text-align: left;
+      padding: 10% 10% 10% 10%;
+      font-size: 18px;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      justify-content: center;
+      position: relative;
+      background: var(--card-color-background, rgba(53,53,53,0.9));
+      color: var(--card-color-text, white);
+      border-radius: 25px;
+      overflow: hidden;
+      grid-template-columns: 50% 50%;
+    }
+    ha-icon {
+      width: 80%;
+      height: 80%;
+      margin: 0% 0% 0% 0%;
+      color: var(--paper-item-icon-color, #fdd835);
+      --mdc-icon-size: 100%;
+    }
+    span {
+      padding: 0% 100% 1% 0%;
+    }
+    ha-icon + span {
+      text-align: left;
+    }
+    ha-icon,
+    span {
+      outline: none;
+    }
+    .state {
+      margin: 0% 50% 5% 0%;
+      padding: 0% 100% 10% 0%;
+      text-align: left;
+    }
+    .hassbut.state-on {
+      text-align: left;
+    }
+    .hassbut.state-off {
+      text-align: left;
+    }
+    .hassbut {
+      display: grid;
+      grid-template-columns: 50% 50%;
+    }
+    .state-div {
+      padding: 0% 100% 5% 0%;
+      align-items: left;
+    }
+    .name-div {
+      padding: 2% 100% 0% 0%;
+      align-items: left;
+    }
+    .fan-icon.state-on {
+      color: var(--paper-item-icon-active-color, #fdd835);
+      animation: rotate 9s linear;
+      animation-delay: 0s;
+      animation-iteration-count: infinite;
+    }
+    .fan-icon.state-unavailable {
+      color: var(--state-icon-unavailable-color, #bdbdbd);
+    }
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
       }
-      ha-icon {
-        width: 80%;
-        height: 80%;
-        margin: 0% 0% 0% 0%;
-        color: var(--paper-item-icon-color, #fdd835);
-        --mdc-icon-size: 100%;
+      25% {
+        transform: rotate(360deg);
       }
-      span {
-        padding: 0% 100% 1% 0%;
+      50% {
+        transform: rotate(720deg);
       }
-      ha-icon + span {
-        text-align: left;
+      75% {
+        transform: rotate(1080deg);
       }
-      ha-icon,
-      span {
-        outline: none;
+      100% {
+        transform: rotate(1440deg);
       }
-      .state {
-        margin: 0% 50% 5% 0%;
-        padding: 0% 100% 10% 0%;
-        text-align: left;
-      }
-      .hassbut.state-on {
-        text-align: left;
-      }
-      .hassbut.state-off {
-        text-align: left;
-      }
-      .hassbut {
-        display: grid;
-        grid-template-columns: 50% 50%;
-      }
-      .state-div {
-        padding: 0% 100% 5% 0%;
-        align-items: left;
-      }
-      .name-div {
-        padding: 2% 100% 0% 0%;
-        align-items: left;
-      }
-      .fan-icon.state-on {
-        color: var(--paper-item-icon-active-color, #fdd835);
-        animation: rotate 9s linear;
-        animation-delay: 0s;
-        animation-iteration-count: infinite;
-      }
-      .fan-icon.state-unavailable {
-        color: var(--state-icon-unavailable-color, #bdbdbd);
-      }
-      @keyframes rotate {
-        0% {
-          transform: rotate(0deg);
-        }
-        25% {
-          transform: rotate(360deg);
-        }
-        50% {
-          transform: rotate(720deg);
-        }
-        75% {
-          transform: rotate(1080deg);
-        }
-        100% {
-          transform: rotate(1440deg);
-        }
-      }
-      .state {
-        font-size: 0.9rem;
-        color: var(--secondary-text-color);
-      }
-    `;
-  }
+    }
+    .state {
+      font-size: 0.9rem;
+      color: var(--secondary-text-color);
+    }
+  `;
+}
 }
