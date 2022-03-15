@@ -8,5 +8,14 @@
   "states":{
       "on": "Ligado",
       "off": "Desligado"
+  },
+  "editor": {
+    "config": {
+      "entity": "Entidade",
+      "name": "Nome",
+      "theme": "Tema",
+      "show_name": "Mostrar Nome?",
+      "show_state": "Mostrar Estado?"
+    }
   }
 }

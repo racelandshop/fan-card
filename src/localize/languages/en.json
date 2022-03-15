@@ -6,7 +6,16 @@
     "show_error": "Show Error"
   },
   "states":{
-      "on": "Ligado",
-      "off": "Desligado"
+      "on": "On",
+      "off": "OFF"
+  },
+  "editor": {
+    "config": {
+      "entity": "Entity",
+      "name": "Name",
+      "theme": "Theme",
+      "show_name": "Show name?",
+      "show_state": "Show state?"
+    }
   }
 }
