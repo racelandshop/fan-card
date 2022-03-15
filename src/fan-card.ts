@@ -150,10 +150,10 @@ export class BoilerplateCard extends LitElement {
     ${this.config.show_name
       ? html`
         <div tabindex = "-1" class="name-div">
-        ${this.config.name}
-          </div>
+          ${this.config.name}
+        </div>
         `
-      : ""}
+      : html`<div tabindex = "-1" class="name-div"></div>`}
     <div>
 
     </div>
