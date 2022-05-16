@@ -78,7 +78,10 @@ export class BoilerplateCard extends LitElement {
           ) {
             const controls = this.shadowRoot?.querySelector(".controls");
             controls?.classList.remove("controls");
-            controls?.classList.add("controls-small");
+              controls?.classList.add("controls-small");
+            const content = this.shadowRoot?.querySelector(".content");
+            content?.classList.remove("content");
+            content?.classList.add("content-small");
             const statusrect = this.shadowRoot?.querySelector(".info");
             statusrect?.classList.remove("info");
             statusrect?.classList.add("info-medium");
@@ -91,6 +94,9 @@ export class BoilerplateCard extends LitElement {
             const controls = this.shadowRoot?.querySelector(".controls");
             controls?.classList.remove("controls");
             controls?.classList.add("controls-small");
+            const content = this.shadowRoot?.querySelector(".content");
+            content?.classList.remove("content");
+            content?.classList.add("content-small");
             const statusrect = this.shadowRoot?.querySelector(".info");
             statusrect?.classList.remove("info");
             statusrect?.classList.add("info-small");
@@ -169,7 +175,7 @@ export class BoilerplateCard extends LitElement {
             @click=${this._handleMoreInfo}
             tabindex="0"
             ></ha-icon-button>
-            <div class="content">
+        <div class="content">
           <div class="controls">
                 <ha-icon-button
                     class="fan-button"
@@ -196,11 +202,11 @@ export class BoilerplateCard extends LitElement {
                         ></ha-state-icon>
 
                 </ha-icon-button>
-        </div>
+            </div>
 
-        <div class="info">
-            ${this.config.name}
-        </div>
+            <div class="info">
+                ${this.config.name}
+            </div>
         </div>
       </ha-card>
     `;
@@ -264,7 +270,6 @@ static get styles(): CSSResultGroup {
       color: var(--paper-item-icon-color, #44739e);
       width: var(--mdc-icon-size, 24px);
       height: var(--mdc-icon-size, 24px);
-      box-sizing: border-box;
       border-radius: 100%;
       --mdc-icon-button-size: 100%;
       --mdc-icon-size: 100%;
@@ -275,9 +280,16 @@ static get styles(): CSSResultGroup {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items:center;
-      }
+        align-items: center;
+        }
 
+    .content-small {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: left;
+    }
     .controls {
         width: 40%;
         text-align: center;
@@ -303,29 +315,33 @@ static get styles(): CSSResultGroup {
     }
 
     .info-medium {
-        text-align: center;
         padding: 5%;
         font-size: 1.8rem;
         font-weight: 450;
+        padding-bottom: 4%;
+        margin-bottom: 4%;
+        margin-left: 7%;
         white-space: nowrap;
         display: inline-block;
         overflow: hidden;
-        max-width: 80%;
+        max-width: 150px;
+        float: left;
         text-overflow: ellipsis;
-        justify-content: space-between;
     }
 
      .info-small {
-        text-align: center;
         padding: 5%;
         font-size: 1.2rem;
         font-weight: 450;
+        padding-bottom: 4%;
+        margin-bottom: 4%;
+        margin-left: 7%;
         white-space: nowrap;
         display: inline-block;
         overflow: hidden;
-        max-width: 80%;
+        max-width: 110px;
+        float: left;
         text-overflow: ellipsis;
-        justify-content: space-between;
     }
 
     ha-state-icon {
