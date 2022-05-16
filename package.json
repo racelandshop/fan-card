@@ -43,6 +43,7 @@
     "rollup-plugin-typescript2": "^0.24.3",
     "rollup-plugin-uglify": "^6.0.4",
     "typescript": "^3.9.10"
+
   },
   "scripts": {
     "start": "rollup -c rollup.config.dev.js --watch",

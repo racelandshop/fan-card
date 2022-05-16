@@ -10,7 +10,7 @@ import { queryAsync } from 'lit-element'
 import { customElement, property, state } from "lit/decorators";
 import { ifDefined } from "lit/directives/if-defined";
 import { classMap } from "lit/directives/class-map";
-import { HomeAssistant, hasConfigOrEntityChanged, hasAction, ActionHandlerEvent, handleAction, LovelaceCardEditor, getLovelace, fireEvent } from 'custom-card-helpers';
+import { HomeAssistant, hasConfigOrEntityChanged, hasAction, ActionHandlerEvent, handleAction, LovelaceCardEditor, getLovelace, computeStateDomain, fireEvent } from 'custom-card-helpers';
 import './editor';
 import type { BoilerplateCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
@@ -76,24 +76,50 @@ export class BoilerplateCard extends LitElement {
             entry.contentRect.width <= rootGrid.clientWidth / 2 &&
             entry.contentRect.width > rootGrid.clientWidth / 3
           ) {
-            const controls = this.shadowRoot?.querySelector(".controls");
-            controls?.classList.remove("controls");
-            controls?.classList.add("controls-small");
+            const shadow = this.shadowRoot?.querySelector("ha-card");
+            shadow?.classList.remove("big-card");
+            shadow?.classList.add("medium-card");
+            const statusicon = this.shadowRoot?.querySelector(".fan-button");
+            statusicon?.classList.remove("fan-button");
+            statusicon?.classList.add("fan-button-medium");
             const statusrect = this.shadowRoot?.querySelector(".info");
             statusrect?.classList.remove("info");
             statusrect?.classList.add("info-medium");
+            const continfo = this.shadowRoot?.querySelector(".container-info");
+            continfo?.classList.remove("container-info");
+            continfo?.classList.add("container-info-small");
+            const containicondisplay =
+              this.shadowRoot?.querySelector(".container-icon");
+            containicondisplay?.classList.remove("container-icon");
+            containicondisplay?.classList.add("container-icon-medium");
+            const controls = this.shadowRoot?.querySelector(".controls");
+            controls?.classList.remove("controls");
+            controls?.classList.add("controls-small");
           }
           else if (
             rootGrid &&
             entry.contentRect.width <= rootGrid.clientWidth / 3 &&
             entry.contentRect.width !== 0
           ) {
-            const controls = this.shadowRoot?.querySelector(".controls");
-            controls?.classList.remove("controls");
-            controls?.classList.add("controls-small");
+            const shadow = this.shadowRoot?.querySelector("ha-card");
+            shadow?.classList.remove("big-card");
+            shadow?.classList.add("small-card");
+            const statusicon = this.shadowRoot?.querySelector(".fan-button");
+            statusicon?.classList.remove("fan-button");
+            statusicon?.classList.add("fan-button-small");
             const statusrect = this.shadowRoot?.querySelector(".info");
             statusrect?.classList.remove("info");
             statusrect?.classList.add("info-small");
+            const containicondisplay =
+              this.shadowRoot?.querySelector(".container-icon");
+            containicondisplay?.classList.remove("container-icon");
+            containicondisplay?.classList.add("container-icon-small");
+            const continfo = this.shadowRoot?.querySelector(".container-info");
+            continfo?.classList.remove("container-info");
+            continfo?.classList.add("container-info-small");
+            const controls = this.shadowRoot?.querySelector(".controls");
+            controls?.classList.remove("controls");
+            controls?.classList.add("controls-small");
           }
         }, 250, true));
       }
@@ -161,18 +187,24 @@ export class BoilerplateCard extends LitElement {
       ? this.hass.states[this.config.entity]
       : undefined;
     return html`
-      <ha-card >
-            <ha-icon-button
-            class="more-info"
-            .label=${""}
-            .path=${this.mdiDotsVertical}
-            @click=${this._handleMoreInfo}
-            tabindex="0"
-            ></ha-icon-button>
-            <div class="content">
+      <ha-card class="big-card">
+          <ha-icon-button
+          class="more-info"
+          .label=${""}
+          .path=${this.mdiDotsVertical}
+          @click=${this._handleMoreInfo}
+          tabindex="0"
+          ></ha-icon-button>
+        <div class="content">
           <div class="controls">
                 <ha-icon-button
-                    class="fan-button"
+                    class="fan-button
+                    ${classMap({
+                    "state-on": ifDefined(
+                    stateObj ? this.computeActiveState(stateObj) : undefined) === "on",
+                      "state-off": ifDefined(
+                        stateObj ? this.computeActiveState(stateObj) : undefined) === "off",
+                    })}"
                       @action=${this._handleAction}
                       @focus="${this.handleRippleFocus}"
                       .actionHandler=${actionHandler({
@@ -182,25 +214,20 @@ export class BoilerplateCard extends LitElement {
                       tabindex="0"
                       .label=${`fan: ${this.config.entity || 'No Entity Defined'}`}
                     >
-
-                    <ha-state-icon
-                        class="container-icon
-                        ${classMap({
-                        "state-on": ifDefined(
-                        stateObj ? this.computeActiveState(stateObj) : undefined) === "on",
-                        "state-off": ifDefined(
-                            stateObj ? this.computeActiveState(stateObj) : undefined) === "off",
-                        })}"
-                        .icon=${this.config.icon}
-                        .state=${stateObj}
-                        ></ha-state-icon>
-
+                    <div class="container-icon">
+                        <ha-state-icon
+                            .icon=${this.config.icon}
+                            .state=${stateObj}
+                          ></ha-state-icon>
+                    </div>
                 </ha-icon-button>
-        </div>
-
-        <div class="info">
-            ${this.config.name}
-        </div>
+          </div>
+          <div class="container-info">
+            <div class="info">
+                    ${this.config.name}
+                  </div>
+            </div>
+          </div>
         </div>
       </ha-card>
     `;
@@ -235,12 +262,12 @@ private computeActiveState = (stateObj: HassEntity): string => {
       ${errorCard}
     `;
   }
-//   private computeObjectId = (entityId: string): string =>
-//     entityId.substr(entityId.indexOf(".") + 1);
-//   private computeStateName = (stateObj: HassEntity): string =>
-//     stateObj.attributes.friendly_name === undefined
-//       ? this.computeObjectId(stateObj.entity_id).replace(/_/g, " ")
-//       : stateObj.attributes.friendly_name || "";
+  private computeObjectId = (entityId: string): string =>
+    entityId.substr(entityId.indexOf(".") + 1);
+  private computeStateName = (stateObj: HassEntity): string =>
+    stateObj.attributes.friendly_name === undefined
+      ? this.computeObjectId(stateObj.entity_id).replace(/_/g, " ")
+      : stateObj.attributes.friendly_name || "";
   private _rippleHandlers: RippleHandlers = new RippleHandlers(() => {
     return this._ripple;
   });
@@ -251,89 +278,200 @@ private computeActiveState = (stateObj: HassEntity): string => {
 
 static get styles(): CSSResultGroup {
   return css`
-    ha-card {
-        height: 100%;
-        padding: 4% 0;
-        box-sizing: border-box;
-        position: relative;
-        overflow: hidden;
-        border-radius: 1.5rem;
+    .big-card {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 4% 0;
+      font-size: 2.3rem;
+      height: 100%;
+      box-sizing: border-box;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.5rem;
+      font-weight: 450;
+    }
+
+    .medium-card {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 4% 0;
+      font-size: 1.8rem;
+      height: 100%;
+      box-sizing: border-box;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.5rem;
+      font-weight: 450;
+    }
+
+    .small-card {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+      text-align: left;
+      padding: 4% 0;
+      font-size: 1.2rem;
+      height: 100%;
+      box-sizing: border-box;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.5rem;
+      font-weight: 450;
     }
 
     .fan-button {
+      display: flex;
+      align-items: center;
       color: var(--paper-item-icon-color, #44739e);
       width: var(--mdc-icon-size, 24px);
       height: var(--mdc-icon-size, 24px);
+      position: relative;
+      box-sizing: border-box;
+      border-radius: 100%;
+      --mdc-icon-button-size: 65%;
+      --mdc-icon-size: 100%;
+    }
+
+    .fan-button-medium {
+      color: var(--paper-item-icon-color, #44739e);
+      width: var(--mdc-icon-size, 24px);
+      height: var(--mdc-icon-size, 24px);
+      position: relative;
       box-sizing: border-box;
       border-radius: 100%;
       --mdc-icon-button-size: 100%;
       --mdc-icon-size: 100%;
     }
 
-    .content {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items:center;
-      }
+    .fan-button-small {
+      color: var(--paper-item-icon-color, #44739e);
+      width: var(--mdc-icon-size, 24px);
+      height: var(--mdc-icon-size, 24px);
+      position: relative;
+      box-sizing: border-box;
+      border-radius: 100%;
+      --mdc-icon-button-size: 90%;
+      --mdc-icon-size: 100%;
+    }
 
-    .controls {
-        width: 40%;
-        text-align: center;
+    .content {
+      height: 100%;
+      width: 100%;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .container-icon-small {
+      height: 100%;
+      width: 100%;
+      margin-right: 100%;
+      margin-top: 0%;
+      margin-left: -2%;
+    }
+
+    .container-icon-medium {
+      height: 110%;
+      width: 110%;
+      justify-content: center;
+      align-items: center;
+      margin-right: 100%;
+      margin-top: 7%;
+      margin-left: -2%;
+    }
+    .container-icon {
+      height: 10%;
+    }
+    .container-info-small {
+      position: relative;
+      display: block;
+    }
+    .container-info {
+      position: relative;
+      float: top;
+      margin-top: 13%;
     }
 
     .controls-small {
-        width: 63%;
-        margin-right: 30%;
-        text-align: center;
+      display: flex;
+      justify-content: center;
+      margin-right: 30%;
+      position: relative;
     }
-
     .info {
-        text-align: center;
-        padding: 5%;
-        font-size: 2.3rem;
-        font-weight: 450;
-        white-space: nowrap;
-        display: inline-block;
-        overflow: hidden;
-        max-width: 80%;
-        text-overflow: ellipsis;
-        justify-content: space-between;
+      text-align: center;
+      margin-top: -56px;
+      padding: 16px;
+      padding-top: 0;
+      font-size: 2.3rem;
+      font-weight: 450;
     }
 
     .info-medium {
-        text-align: center;
-        padding: 5%;
-        font-size: 1.8rem;
-        font-weight: 450;
-        white-space: nowrap;
-        display: inline-block;
-        overflow: hidden;
-        max-width: 80%;
-        text-overflow: ellipsis;
-        justify-content: space-between;
+      text-align: left;
+      padding-bottom: 10%;
+      margin-top: 7%;
+      margin-bottom: 2%;
+      font-size: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      padding: 5%;
+      padding-top: 0;
+      margin-left: 7%;
+      font-weight: 450;
     }
 
-     .info-small {
-        text-align: center;
-        padding: 5%;
-        font-size: 1.2rem;
-        font-weight: 450;
-        white-space: nowrap;
-        display: inline-block;
-        overflow: hidden;
-        max-width: 80%;
-        text-overflow: ellipsis;
-        justify-content: space-between;
+    .info-small {
+      text-align: left;
+      padding-bottom: 0%;
+      padding-left: 12%;
+      margin-top: 5%;
+      margin-bottom: 6%;
+      font-size: var(--name-font-size);
+      white-space: nowrap;
+      display: inline-block;
+      overflow: hidden;
+      max-width: 110px;
+      float: left;
+      text-overflow: ellipsis;
+      justify-content: space-between;
     }
-
     ha-state-icon {
       width: 100%;
       height: 100%;
     }
+    span {
+      padding: 0% 100% 1% 0%;
+    }
 
     ha-icon-button + span {
+      text-align: center;
+    }
+
+    ha-icon-button,
+    span {
+      outline: none;
+    }
+
+    ha-icon-button.state-on {
+      text-align: center;
+    }
+
+    ha-icon-button.state-off {
       text-align: center;
     }
 
@@ -348,13 +486,13 @@ static get styles(): CSSResultGroup {
       z-index: 1;
     }
 
-    ha-state-icon.state-on {
+    ha-icon-button.state-on {
       color: var(--paper-item-icon-active-color, #fdd835);
-      animation: rotate 4s linear;
+      animation: rotate 9s linear;
       animation-delay: 0s;
       animation-iteration-count: infinite;
     }
-    ha-state-icon.state-unavailable {
+    ha-icon-button.state-unavailable {
       color: var(--state-icon-unavailable-color, #bdbdbd);
     }
     @keyframes rotate {
@@ -362,16 +500,16 @@ static get styles(): CSSResultGroup {
         transform: rotate(0deg);
       }
       25% {
-        transform: rotate(90deg);
+        transform: rotate(360deg);
       }
       50% {
-        transform: rotate(180deg);
+        transform: rotate(720deg);
       }
       75% {
-        transform: rotate(270deg);
+        transform: rotate(1080deg);
       }
       100% {
-        transform: rotate(360deg);
+        transform: rotate(1440deg);
       }
     }
     .state {

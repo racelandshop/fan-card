@@ -76,7 +76,8 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
         .computeLabel=${this._computeLabel}
         .data = ${this._config}
         @value-changed=${this._valueChanged}
-      ></ha-form>`;
+      ></ha-form>
+      `;
   }
 
   private _initialize(): void {
