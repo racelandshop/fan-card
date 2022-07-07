@@ -14,11 +14,11 @@ import { HomeAssistant, hasConfigOrEntityChanged, hasAction, ActionHandlerEvent,
 import './editor';
 import type { BoilerplateCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
-import { CARD_VERSION } from './const';
+import { CARD_VERSION, UNAVAILABLE, UNAVAILABLE_STATES } from './const';
 import { localize } from './localize/localize';
 import { debounce } from "./common/debounce";
 import ResizeObserver from "./common/resizeObserver";
-
+import { computeStateName } from "./common/compute_state_name";
 
 
 console.info(
@@ -44,7 +44,7 @@ export class BoilerplateCard extends LitElement {
     entities: string[],
     entitiesFallback: string[]
   ): BoilerplateCardConfig {
-    const includeDomains = ["switch"];
+    const includeDomains = ["switch", "fan"];
     const maxEntities = 1;
     const foundEntities = findEntities(
       hass,
@@ -166,6 +166,10 @@ export class BoilerplateCard extends LitElement {
     const stateObj = this.config.entity
       ? this.hass.states[this.config.entity]
       : undefined;
+    const name = this.config.show_name
+
+    ? this.config.name || (stateObj ? computeStateName(stateObj) : "")
+    : "";
     return html`
       <ha-card >
             <ha-icon-button
@@ -195,8 +199,10 @@ export class BoilerplateCard extends LitElement {
                         "state-on": ifDefined(
                         stateObj ? this.computeActiveState(stateObj) : undefined) === "on",
                         "state-off": ifDefined(
-                            stateObj ? this.computeActiveState(stateObj) : undefined) === "off",
+                          stateObj ? this.computeActiveState(stateObj) : undefined) === "off",
+                        "state-unavailable": stateObj?.state === UNAVAILABLE,
                         })}"
+                        .disabled=${UNAVAILABLE_STATES.includes(stateObj!.state)}
                         .icon=${this.config.icon}
                         .state=${stateObj}
                         ></ha-state-icon>
@@ -205,7 +211,11 @@ export class BoilerplateCard extends LitElement {
             </div>
 
             <div class="info">
-                ${this.config.name}
+            ${UNAVAILABLE_STATES.includes(stateObj!.state)
+              ? html`
+                  <unavailable-icon></unavailable-icon>`
+      : html ``}
+                ${name}
             </div>
         </div>
       </ha-card>
@@ -258,16 +268,16 @@ private computeActiveState = (stateObj: HassEntity): string => {
 static get styles(): CSSResultGroup {
   return css`
     ha-card {
-        height: 100%;
-        padding: 4% 0;
-        box-sizing: border-box;
-        position: relative;
+      height: 100%;
+      padding: 4% 0;
+      box-sizing: border-box;
+      position: relative;
         overflow: hidden;
         border-radius: 1.5rem;
-    }
+      }
 
-    .fan-button {
-      color: var(--paper-item-icon-color, #44739e);
+      .fan-button {
+        color: var(--paper-item-icon-color, #44739e);
       width: var(--mdc-icon-size, 24px);
       height: var(--mdc-icon-size, 24px);
       border-radius: 100%;
@@ -281,9 +291,9 @@ static get styles(): CSSResultGroup {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        }
+      }
 
-    .content-small {
+      .content-small {
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -291,9 +301,9 @@ static get styles(): CSSResultGroup {
         align-items: left;
     }
     .controls {
-        width: 40%;
+      width: 40%;
         text-align: center;
-    }
+      }
 
     .controls-small {
         width: 63%;
@@ -312,9 +322,9 @@ static get styles(): CSSResultGroup {
         max-width: 80%;
         text-overflow: ellipsis;
         justify-content: space-between;
-    }
+      }
 
-    .info-medium {
+      .info-medium {
         padding: 5%;
         font-size: 1.8rem;
         font-weight: 450;
@@ -327,9 +337,9 @@ static get styles(): CSSResultGroup {
         max-width: 150px;
         float: left;
         text-overflow: ellipsis;
-    }
+      }
 
-     .info-small {
+      .info-small {
         padding: 5%;
         font-size: 1.2rem;
         font-weight: 450;
@@ -342,9 +352,9 @@ static get styles(): CSSResultGroup {
         max-width: 110px;
         float: left;
         text-overflow: ellipsis;
-    }
+      }
 
-    ha-state-icon {
+      ha-state-icon {
       width: 100%;
       height: 100%;
     }
@@ -362,6 +372,11 @@ static get styles(): CSSResultGroup {
       border-radius: 100%;
       color: var(--secondary-text-color);
       z-index: 1;
+    }
+    unavailable-icon {
+      position: absolute;
+        top: 11px;
+        right: 25%;
     }
 
     ha-state-icon.state-on {

@@ -1,7 +1,7 @@
 export const fanCardEditorSchema = [
     {
         name: "entity",
-        selector: { entity: {domain: "switch"} }
+        selector: { entity: {domain: ["switch", "fan"]} }
     },
     {
         name: "name",

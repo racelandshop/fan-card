@@ -9,7 +9,7 @@ import { BoilerplateCardConfig, EditorTarget } from './types';
 import { customElement, property, state } from 'lit/decorators';
 import { fanCardEditorSchema } from './schema';
 
-const includeDomains = ["switch"];
+const includeDomains = ["switch", "fan"];
 
 @customElement('fan-card-editor')
 export class BoilerplateCardEditor extends LitElement implements LovelaceCardEditor {
@@ -26,6 +26,7 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
 
   public setConfig(config: BoilerplateCardConfig): void {
     this._config = config;
+    console.log('config fan', this._config)
     this.loadCardHelpers();
   }
   protected shouldUpdate(): boolean {
