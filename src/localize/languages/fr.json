@@ -1,0 +1,22 @@
+{
+    "common": {
+      "card": "Ventilateur",
+      "version": "Version",
+      "invalid_configuration": "Configuration invalide",
+      "show_warning": "Afficher l'avis",
+      "show_error": "Afficher l'erreur"
+    },
+    "states":{
+        "on": "Allumé",
+        "off": "À l'arrêt"
+    },
+    "editor": {
+      "config": {
+        "entity": "Entité",
+        "name": "Nom",
+        "theme": "Thème",
+        "show_name": "Afficher le nom?",
+        "show_state": "Afficher l'état?"
+      }
+    }
+  }

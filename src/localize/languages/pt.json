@@ -1,5 +1,6 @@
 {
   "common": {
+    "card": "Ventoinha",
     "version": "Versão",
     "invalid_configuration": "Configuração Inválida",
     "show_warning": "Mostrar Aviso",

@@ -29,7 +29,7 @@ console.info(
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
   type: 'fan-card',
-  name: 'Ventoinha',
+  name: localize('common.card'),
   preview: true, //IMPORTANTE
 });
 
@@ -39,6 +39,7 @@ export class BoilerplateCard extends LitElement {
     return document.createElement('fan-card-editor');
   }
   @queryAsync('mwc-ripple') private _ripple!: Promise<Ripple | null>;
+  @property({ type: String }) public layout = "big";
   public static getStubConfig(
     hass: HomeAssistant,
     entities: string[],
@@ -58,55 +59,55 @@ export class BoilerplateCard extends LitElement {
 
   @property({ attribute: false }) public hass!: HomeAssistant;
 
-  protected firstUpdated(): void {
-    this._attachResizeObserver();
-  }
+  // protected firstUpdated(): void {
+  //   this._attachResizeObserver();
+  // }
 
-  private _resizeObserver?: ResizeObserver;
+  // private _resizeObserver?: ResizeObserver;
 
-  private async _attachResizeObserver(): Promise<void> {
-    if (!this._resizeObserver) {
-      this._resizeObserver = new ResizeObserver(
-        debounce(
-          (entries: any) => {
-          const rootGrid = this.closest("div");
-          const entry = entries[0];
-          if (
-            rootGrid &&
-            entry.contentRect.width <= rootGrid.clientWidth / 2 &&
-            entry.contentRect.width > rootGrid.clientWidth / 3
-          ) {
-            const controls = this.shadowRoot?.querySelector(".controls");
-            controls?.classList.remove("controls");
-              controls?.classList.add("controls-small");
-            const content = this.shadowRoot?.querySelector(".content");
-            content?.classList.remove("content");
-            content?.classList.add("content-small");
-            const statusrect = this.shadowRoot?.querySelector(".info");
-            statusrect?.classList.remove("info");
-            statusrect?.classList.add("info-medium");
-          }
-          else if (
-            rootGrid &&
-            entry.contentRect.width <= rootGrid.clientWidth / 3 &&
-            entry.contentRect.width !== 0
-          ) {
-            const controls = this.shadowRoot?.querySelector(".controls");
-            controls?.classList.remove("controls");
-            controls?.classList.add("controls-small");
-            const content = this.shadowRoot?.querySelector(".content");
-            content?.classList.remove("content");
-            content?.classList.add("content-small");
-            const statusrect = this.shadowRoot?.querySelector(".info");
-            statusrect?.classList.remove("info");
-            statusrect?.classList.add("info-small");
-          }
-        }, 250, true));
-      }
+  // private async _attachResizeObserver(): Promise<void> {
+  //   if (!this._resizeObserver) {
+  //     this._resizeObserver = new ResizeObserver(
+  //       debounce(
+  //         (entries: any) => {
+  //         const rootGrid = this.closest("div");
+  //         const entry = entries[0];
+  //         if (
+  //           rootGrid &&
+  //           entry.contentRect.width <= rootGrid.clientWidth / 2 &&
+  //           entry.contentRect.width > rootGrid.clientWidth / 3
+  //         ) {
+  //           const controls = this.shadowRoot?.querySelector(".controls");
+  //           controls?.classList.remove("controls");
+  //             controls?.classList.add("controls-small");
+  //           const content = this.shadowRoot?.querySelector(".content");
+  //           content?.classList.remove("content");
+  //           content?.classList.add("content-small");
+  //           const statusrect = this.shadowRoot?.querySelector(".info");
+  //           statusrect?.classList.remove("info");
+  //           statusrect?.classList.add("info-medium");
+  //         }
+  //         else if (
+  //           rootGrid &&
+  //           entry.contentRect.width <= rootGrid.clientWidth / 3 &&
+  //           entry.contentRect.width !== 0
+  //         ) {
+  //           const controls = this.shadowRoot?.querySelector(".controls");
+  //           controls?.classList.remove("controls");
+  //           controls?.classList.add("controls-small");
+  //           const content = this.shadowRoot?.querySelector(".content");
+  //           content?.classList.remove("content");
+  //           content?.classList.add("content-small");
+  //           const statusrect = this.shadowRoot?.querySelector(".info");
+  //           statusrect?.classList.remove("info");
+  //           statusrect?.classList.add("info-small");
+  //         }
+  //       }, 250, true));
+  //     }
 
-    this._resizeObserver.observe(this);
+  //   this._resizeObserver.observe(this);
 
-    }
+  //   }
 
   @state() private config!: BoilerplateCardConfig;
   public setConfig(config: BoilerplateCardConfig): void {
@@ -179,8 +180,14 @@ export class BoilerplateCard extends LitElement {
             @click=${this._handleMoreInfo}
             tabindex="0"
             ></ha-icon-button>
-        <div class="content">
-          <div class="controls">
+        <div class=${classMap({
+                "content": this.layout === "big",
+                "content-small": this.layout === "medium" || this.layout === "small",
+              })}>
+          <div class=${classMap({
+                "controls": this.layout === "big",
+                "controls-small": this.layout === "medium" || this.layout === "small",
+              })}>
                 <ha-icon-button
                     class="fan-button"
                       @action=${this._handleAction}
@@ -210,7 +217,11 @@ export class BoilerplateCard extends LitElement {
                 </ha-icon-button>
             </div>
 
-            <div class="info">
+            <div class=${classMap({
+                "info": this.layout === "big",
+                "info-small": this.layout === "small",
+                "info-medium": this.layout === "medium",
+              })}>
             ${UNAVAILABLE_STATES.includes(stateObj!.state)
               ? html`
                   <unavailable-icon></unavailable-icon>`

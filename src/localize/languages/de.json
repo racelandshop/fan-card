@@ -1,0 +1,22 @@
+{
+    "common": {
+      "card": "Fan",
+      "version": "VeAusführungrsão",
+      "invalid_configuration": "Ungültige Konfiguration",
+      "show_warning": "Hinweis zeigen",
+      "show_error": "Fehler anzeigen"
+    },
+    "states":{
+        "on": "Eingeschaltet",
+        "off": "Aus"
+    },
+    "editor": {
+      "config": {
+        "entity": "Einheit",
+        "name": "Name",
+        "theme": "Thema",
+        "show_name": "Name anzeigen?",
+        "show_state": "Zustand zeigen?"
+      }
+    }
+  }
