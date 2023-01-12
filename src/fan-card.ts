@@ -58,57 +58,6 @@ export class BoilerplateCard extends LitElement {
   }
 
   @property({ attribute: false }) public hass!: HomeAssistant;
-
-  // protected firstUpdated(): void {
-  //   this._attachResizeObserver();
-  // }
-
-  // private _resizeObserver?: ResizeObserver;
-
-  // private async _attachResizeObserver(): Promise<void> {
-  //   if (!this._resizeObserver) {
-  //     this._resizeObserver = new ResizeObserver(
-  //       debounce(
-  //         (entries: any) => {
-  //         const rootGrid = this.closest("div");
-  //         const entry = entries[0];
-  //         if (
-  //           rootGrid &&
-  //           entry.contentRect.width <= rootGrid.clientWidth / 2 &&
-  //           entry.contentRect.width > rootGrid.clientWidth / 3
-  //         ) {
-  //           const controls = this.shadowRoot?.querySelector(".controls");
-  //           controls?.classList.remove("controls");
-  //             controls?.classList.add("controls-small");
-  //           const content = this.shadowRoot?.querySelector(".content");
-  //           content?.classList.remove("content");
-  //           content?.classList.add("content-small");
-  //           const statusrect = this.shadowRoot?.querySelector(".info");
-  //           statusrect?.classList.remove("info");
-  //           statusrect?.classList.add("info-medium");
-  //         }
-  //         else if (
-  //           rootGrid &&
-  //           entry.contentRect.width <= rootGrid.clientWidth / 3 &&
-  //           entry.contentRect.width !== 0
-  //         ) {
-  //           const controls = this.shadowRoot?.querySelector(".controls");
-  //           controls?.classList.remove("controls");
-  //           controls?.classList.add("controls-small");
-  //           const content = this.shadowRoot?.querySelector(".content");
-  //           content?.classList.remove("content");
-  //           content?.classList.add("content-small");
-  //           const statusrect = this.shadowRoot?.querySelector(".info");
-  //           statusrect?.classList.remove("info");
-  //           statusrect?.classList.add("info-small");
-  //         }
-  //       }, 250, true));
-  //     }
-
-  //   this._resizeObserver.observe(this);
-
-  //   }
-
   @state() private config!: BoilerplateCardConfig;
   public setConfig(config: BoilerplateCardConfig): void {
     if (!config) {
@@ -209,7 +158,6 @@ export class BoilerplateCard extends LitElement {
                           stateObj ? this.computeActiveState(stateObj) : undefined) === "off",
                         "state-unavailable": stateObj?.state === UNAVAILABLE,
                         })}"
-                        .disabled=${UNAVAILABLE_STATES.includes(stateObj!.state)}
                         .icon=${this.config.icon}
                         .state=${stateObj}
                         ></ha-state-icon>
@@ -222,7 +170,7 @@ export class BoilerplateCard extends LitElement {
                 "info-small": this.layout === "small",
                 "info-medium": this.layout === "medium",
               })}>
-            ${UNAVAILABLE_STATES.includes(stateObj!.state)
+            ${stateObj?.state === UNAVAILABLE
               ? html`
                   <unavailable-icon></unavailable-icon>`
       : html ``}
@@ -235,7 +183,7 @@ export class BoilerplateCard extends LitElement {
 
 private computeActiveState = (stateObj: HassEntity): string => {
   const domain = stateObj.entity_id.split(".")[0];
-  let state = stateObj.state;
+  let state = stateObj?.state;
   if (domain === "climate") {
     state = stateObj.attributes.hvac_action;
   }
@@ -396,6 +344,7 @@ static get styles(): CSSResultGroup {
       animation-delay: 0s;
       animation-iteration-count: infinite;
     }
+
     ha-state-icon.state-unavailable {
       color: var(--state-icon-unavailable-color, #bdbdbd);
     }
